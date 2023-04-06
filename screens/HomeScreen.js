@@ -1,9 +1,12 @@
 import React,{useState,useEffect} from "react";
-import { View, Text, StyleSheet, Button ,ScrollView, SafeAreaView,Dimensions,Animated,Image, FlatList} from "react-native";
+import { View, Text, StyleSheet, Button ,ScrollView, SafeAreaView,Dimensions,Animated,Image, FlatList, TouchableOpacity} from "react-native";
 const { width } = Dimensions.get('window')
 import { Overlay } from 'react-native-elements';
-
- 
+import { useNavigation } from '@react-navigation/native';
+import { Content } from "../object/Content";
+import {Content1} from "../object/Content1";
+import {Piensa} from "../object/PiensaDi";
+import {Sabiasque} from "../object/Sabiasque";
 
 
     
@@ -17,6 +20,15 @@ const HomeScreen = ({ navigation }) => {
         { key: '5', name: 'Curso 5', content: 'Curso 5 Content' ,image:require('../assets/icon.png') },
         { key: '6', name: 'Curso 6', content: 'Curso 6 Content' , image:require('../assets/icon.png')},
     ];
+
+    const data2 = [
+      { key: '1', name: 'Curso 1', content: 'Curso 1 Content',image:require('../assets/icon.png') },
+      { key: '2', name: 'Curso 2', content: 'Curso 2 Content' ,image:require('../assets/icon.png')},
+      { key: '3', name: 'Curso 3', content: 'Curso 3 Content'   ,image:require('../assets/icon.png')},
+      { key: '4', name: 'Curso 4', content: 'Curso 4 Content' ,image:require('../assets/icon.png') },
+      { key: '5', name: 'Curso 5', content: 'Curso 5 Content' ,image:require('../assets/icon.png') },
+      { key: '6', name: 'Curso 6', content: 'Curso 6 Content' , image:require('../assets/icon.png')},
+  ];
 
     const {width,height} = Dimensions.get("window");
     // SHOW THE DATE 
@@ -57,6 +69,7 @@ const HomeScreen = ({ navigation }) => {
         extrapolate: 'clamp'
     });
 
+
     return (
       <View style={styles.container}>
         <Animated.View
@@ -66,8 +79,7 @@ const HomeScreen = ({ navigation }) => {
               justifyContent: "center",
             },
           ]}
-        >
-        </Animated.View>
+        ></Animated.View>
         <ScrollView
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: AnimatedHeaderValue } } }],
@@ -124,16 +136,16 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             <FlatList
-              data={[1, 2, 3, 4, 5]}
+              data={Content}
               getItemLayout={(data, index) => ({
                 length: width * 0.9 + width * 0.03,
                 offset: width * 0.9 + width * 0.03 * index,
                 index,
               })}
               renderItem={({ item, index }) => (
-                <View
+                <TouchableOpacity
                   style={{
-                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    backgroundColor: "#FCA7BC",
                     width: width * 0.9,
                     height: height * 0.3,
                     borderRadius: 10,
@@ -146,37 +158,50 @@ const HomeScreen = ({ navigation }) => {
                     margin: width * 0.015,
                     left: width * 0.03,
                   }}
+                  onPress={() =>
+                    navigation.navigate("Contenido", { propiedad: item })
+                  }
+                  activeOpacity={0.8}
                 >
+                  <Image
+                    source={item.image}
+                    style={{
+                      width: width * 0.9,
+                      height: height * 0.2,
+                      borderTopLeftRadius: 10,
+                      borderTopRightRadius: 10,
+                    }}
+                  />
                   <Text
                     style={{
                       fontSize: 20,
-                      color: "#000",
+                      color: "#3c225e",
                       fontStyle: "normal",
                       fontWeight: "bold",
                       left: width * 0.05,
                       top: height * 0.02,
                     }}
                   >
-                    Game {item}
+                    {item.name}
                   </Text>
                   <Text
                     style={{
                       fontSize: 15,
-                      color: "grey",
+                      color: "rgba(0,0,0, 0.5)",
                       fontStyle: "normal",
                       fontWeight: "bold",
                       left: width * 0.05,
                       top: height * 0.02,
                     }}
                   >
-                    Game {item} Description
+                    {item.content}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
               initialScrollIndex={2}
               showsHorizontalScrollIndicator={false}
               horizontal={true}
-              keyExtractor={(item) => item.toString()}
+              keyExtractor={(item) => item.key}
               snapToInterval={width * 0.9 + width * 0.03}
             />
           </View>
@@ -190,7 +215,6 @@ const HomeScreen = ({ navigation }) => {
               borderBottomWidth: 0.5,
               alignSelf: "center",
               paddingBottom: height * 0.01,
-              width: width * 0.9,
             }}
           >
             <Text
@@ -216,53 +240,63 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               <View style={{ flexDirection: "column" }}>
-                {data1.map((item, index) => {
-                  if (index % 3 === 0) {
-                    return (
-                      <View key={item.key} style={{ flexDirection: "row" }}>
-                        {data1.slice(index, index + 3).map((innerItem) => (
-                          <View
-                            key={innerItem.key}
-                            style={{
-                              width: width * 0.8,
-                              height: height * 0.09,
-                              borderRadius: width * 0.03,
-                              backgroundColor: "lightgray",
-                              alignItems: "center",
-                              margin: width * 0.02,
-                              alignContent: "flex-start",
-                              justifyContent: "flex-start",
-                              flexDirection: "row",
-                            }}
-                          >
-                            <Image
-                              source={innerItem.image}
+                <FlatList
+                  data={Content1}
+                  keyExtractor={(item) => item.key}
+                  renderItem={({ item, index }) => {
+                    if (index % 3 === 0) {
+                      return (
+                        <View style={{ flexDirection: "row" }}>
+                          {data1.slice(index, index + 3).map((innerItem) => (
+                            <TouchableOpacity
+                              key={innerItem.key}
                               style={{
-                                width: width * 0.15,
-                                height: height * 0.07,
-                                borderRadius: width * 0.05,
-                                marginRight: width * 0.02,
-                                left: width * 0.02,
+                                width: width * 0.8,
+                                height: height * 0.09,
+                                borderRadius: width * 0.03,
+                                backgroundColor: "#7dc8dd",
+                                alignItems: "center",
+                                margin: width * 0.02,
+                                alignContent: "flex-start",
+                                justifyContent: "flex-start",
+                                flexDirection: "row",
                               }}
-                            />
-                            <Text
-                              style={{
-                                fontSize: 15,
-                                color: "#000",
-                                fontStyle: "normal",
-                                fontWeight: "bold",
-                                left: width * 0.02,
-                              }}
+                              onPress={() =>
+                                navigation.navigate("Contenido", {
+                                  propiedad: item,
+                                })
+                              }
                             >
-                              {innerItem.name}
-                            </Text>
-                          </View>
-                        ))}
-                      </View>
-                    );
-                  }
-                  return null;
-                })}
+                              <Image
+                                source={innerItem.image}
+                                style={{
+                                  width: width * 0.15,
+                                  height: height * 0.07,
+                                  borderRadius: width * 0.05,
+                                  marginRight: width * 0.02,
+                                  left: width * 0.02,
+                                }}
+                              />
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  color: "#000",
+                                  fontStyle: "normal",
+                                  fontWeight: "bold",
+                                  left: width * 0.02,
+                                  color: "rgba(0,0,0, 0.5)",
+                                }}
+                              >
+                                {innerItem.name}
+                              </Text>
+                            </TouchableOpacity>
+                          ))}
+                        </View>
+                      );
+                    }
+                    return null;
+                  }}
+                />
               </View>
             </ScrollView>
           </View>
@@ -292,18 +326,17 @@ const HomeScreen = ({ navigation }) => {
               Piensa-Diferente 👽
             </Text>
             <FlatList
+              data={Piensa}
+              keyExtractor={(item) => item.key}
+              horizontal={true}
+              snapToInterval={width * 0.81 + width * 0.03}
               getItemLayout={(data, index) => ({
                 length: width * 0.81 + width * 0.03,
-                offset: width * 0.81 + width * 0.03 * index,
+                offset: (width * 0.81 + width * 0.03) * index,
                 index,
-              })
-              }
-              data={data1}
-              horizontal={true}
-              keyExtractor={(item) => item.key}
-              snapToInterval={width * 0.81 + width * 0.03}
+              })}
               renderItem={({ item }) => (
-                <View
+                <TouchableOpacity
                   style={{
                     marginTop: height * 0.05,
                     backgroundColor: "rgba(255, 255, 255, 0.8)",
@@ -316,6 +349,11 @@ const HomeScreen = ({ navigation }) => {
                     shadowRadius: 2,
                     margin: width * 0.015,
                   }}
+                  onPress={() =>
+                    navigation.navigate("Contenido", {
+                      propiedad: item,
+                    })
+                  }
                 >
                   <Text
                     style={{
@@ -329,7 +367,7 @@ const HomeScreen = ({ navigation }) => {
                   >
                     {item.name}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
             />
           </View>
@@ -359,22 +397,21 @@ const HomeScreen = ({ navigation }) => {
               Sabias Que? 🤔
             </Text>
             <FlatList
-              getItemLayout={(data, index) => ({
-                length: width * 0.4 + width * 0.03,
-                offset: width * 0.4 + width * 0.03 * index,
-                index,
-              })
-              }
-              data={data1}
-              horizontal={true}
+              data={Sabiasque}
               keyExtractor={(item) => item.key}
-              snapToInterval={width * 0.4 + width * 0.03}
+              horizontal={true}
+              snapToInterval={width * 0.81 + width * 0.03}
+              getItemLayout={(data, index) => ({
+                length: width * 0.81 + width * 0.03,
+                offset: (width * 0.81 + width * 0.03) * index,
+                index,
+              })}
               renderItem={({ item }) => (
-                <View
+                <TouchableOpacity
                   style={{
                     marginTop: height * 0.05,
                     backgroundColor: "rgba(255, 255, 255, 0.8)",
-                    width: width * 0.4,
+                    width: width * 0.81,
                     height: height * 0.15,
                     borderRadius: 10,
                     shadowColor: "#000",
@@ -383,6 +420,11 @@ const HomeScreen = ({ navigation }) => {
                     shadowRadius: 2,
                     margin: width * 0.015,
                   }}
+                  onPress={() =>
+                    navigation.navigate("Contenido", {
+                      propiedad: item,
+                    })
+                  }
                 >
                   <Text
                     style={{
@@ -396,7 +438,7 @@ const HomeScreen = ({ navigation }) => {
                   >
                     {item.name}
                   </Text>
-                </View>
+                </TouchableOpacity>
               )}
             />
           </View>

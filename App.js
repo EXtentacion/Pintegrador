@@ -1,6 +1,6 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, View,Dimensions} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useFocusEffect,useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './screens/HomeScreen';
 import Profile from './screens/Profile';
@@ -12,20 +12,20 @@ import { TransitionPresets } from '@react-navigation/stack';
 import { BlurView } from 'expo-blur';
 import First from './Splash/1';
 import Second from './Splash/2';
-import There from './Splash/3';
+import There from './Splash/There';
 import Four from './Splash/4';
 import Five from './Splash/5';
 import Six from './Splash/6';
-import { HeaderStyleInterpolators } from '@react-navigation/stack';
+import Contenido from './screens/Contenido';
+
+
+
+
 
 
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-
-
-
 
 
 
@@ -62,14 +62,10 @@ function StackFLow() {
       <Stack.Screen name="First" component={First} options={{
         headerShown: false,
         }}/>
-      <Stack.Screen name="Second" component={Second} options={{headerShown: false}}/>
-      <Stack.Screen name="There" component={There} options={{headerShown: false}}/>
-      <Stack.Screen name="Four" component={Four} options={{headerShown: false}}/>
-      <Stack.Screen name="Five" component={Five} options={{headerShown: false}}/>
-      <Stack.Screen name="Six" component={Six} options={{headerShown: false}}/>
     </Stack.Navigator>
   );
 }
+
 function StackFLow1() {
   return (
    
@@ -78,7 +74,7 @@ function StackFLow1() {
         headerShown: false,
        }}  
       />
-      <Stack.Screen name="Second" component={Second} />
+      <Stack.Screen name="First" component={Second} />
     </Stack.Navigator>
   );
 }
@@ -86,8 +82,80 @@ function StackFLow1() {
 
 
 
+
 export default function App() {
+  const [isContenidoOpen, setIsContenidoOpen] = useState(false)
+
+
+  const listeners = () => ({
+    // aquí actualizamos el estado cuando se muestra la pantalla de Contenido
+    focus: () => {
+      setIsContenidoOpen(true);
+    },
+    // aquí actualizamos el estado cuando se oculta la pantalla de Contenido
+    blur: () => {
+      setIsContenidoOpen(false);
+    }
+  });
+
+  const Listeners1 = () => ({
+    // aquí actualizamos el estado cuando se muestra la pantalla de Contenido
+    focus: () => {
+      setIsContenidoOpen(false);
+    },
+    // aquí actualizamos el estado cuando se oculta la pantalla de Contenido
+    blur: () => {
+      setIsContenidoOpen(false);
+    }
+  });
+
+
+  
   const {width,height} = Dimensions.get("window");
+  
+
+  const StackFLow2 = () => {
+
+
+    return (
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle:{
+            backgroundColor: 'transparent',  
+          },
+          transitionSpec: {
+            open:{
+              animation: 'timing',
+              config: {
+                duration: 300,
+              },
+            },
+            close:{
+              animation: 'timing',
+              config: { 
+                duration: 300,
+              },
+            },
+          }
+        }}
+      >
+        <Stack.Screen name="HomeScreen" component={HomeScreen}   options={{
+          headerShown: false,
+        }}
+        listeners={Listeners1}
+        />
+        <Stack.Screen name="Contenido" component={Contenido} options={{
+          headerShown: false,
+          }}
+          listeners={listeners}
+        />
+        <Stack.Screen name="There" component={There} options={{
+          headerShown: false,
+          }}/>
+      </Stack.Navigator>
+    );
+  }
+
 
   return (
     <NavigationContainer>
@@ -105,8 +173,9 @@ export default function App() {
       >
         <Tab.Screen
           name="Home"
-          component={HomeScreen}
+          component={StackFLow2}
           options={{
+            tabBarStyle:isContenidoOpen?{display: 'none'}:{},
             tabBarComponent: (props) => (
               <BlurView
                 style={{
